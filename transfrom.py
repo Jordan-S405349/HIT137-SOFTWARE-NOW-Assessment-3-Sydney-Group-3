@@ -1,3 +1,23 @@
+"""
+transformations.py
+ 
+Defines the Transformation class hierarchy: this is the main place this
+project demonstrates inheritance and polymorphism on purpose, rather than
+just for the sake of having a class hierarchy somewhere.
+ 
+The idea: PuzzleGame can build a list containing a mix of SwapTransform,
+RotateTransform, and FlipTransform objects, and apply every one of
+them the exact same way:
+ 
+    for transformation in transformations:
+        transformation.apply(grid)
+ 
+Game never needs to check "is this a swap or a rotate or a flip?" with
+if/elif chains. Each subclass already knows how to apply itself. That's what
+polymorphism actually buys you: the calling code stays the same no matter how
+many new transformation types get added later.
+"""
+
 from abc import ABC, abstractmethod
 
 class Transform(ABC):

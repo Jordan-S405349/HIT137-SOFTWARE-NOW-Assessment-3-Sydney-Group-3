@@ -1,3 +1,19 @@
+"""
+game.py
+ 
+Defines Game: the top-level class that owns a TileGrid, tracks moves
+and hints, and generates/applies the random scrambling transformations.
+ 
+This is the class the other two members' code plugs into:
+  - Whoever writes the OpenCV image loading/splitting calls load_tiles()
+    once they have split an image into a dict of (row, col) -> pixel data.
+  - Whoever writes the Tkinter GUI calls select_tile(), rotate_tile(),
+    flip_tile(), get_hint(), solve(), is_solved(), moves_made(),
+    tiles_remain(), and hints_remain() to drive the interface,
+    without needing to know anything about how tiles or transformations
+    work internally.
+"""
+
 import random
 from tile import Tile
 from grid import TileGrid

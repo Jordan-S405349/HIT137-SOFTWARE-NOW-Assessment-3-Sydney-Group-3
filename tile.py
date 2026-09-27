@@ -1,3 +1,22 @@
+"""
+tile.py
+ 
+Defines the Tile class: the smallest building block of the puzzle.
+ 
+Each Tile owns its own image data and knows two things about its position:
+  - home_position: where it belongs when the puzzle is solved (fixed at
+    creation, never changes afterwards)
+  - current_position: where it actually sits in the grid right now (changes
+    whenever a swap happens)
+ 
+It also tracks its own rotation and flip state, and applies those
+transformations to its own image data using OpenCV. This is kept inside
+Tile (rather than in the GUI or the image-processing code) because "how a
+tile responds to being rotated or flipped" is exactly the kind of behaviour
+that belongs encapsulated with the data it affects.
+"""
+
+
 import cv2
 
 class Tile:
