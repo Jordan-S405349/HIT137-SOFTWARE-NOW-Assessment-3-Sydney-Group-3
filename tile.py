@@ -32,7 +32,7 @@ class Tile:
     
     @property
     def current_position(self):
-        return._current_position
+        return self._current_position
     
     @current_position.setter
     def current_position(self, new_position):
