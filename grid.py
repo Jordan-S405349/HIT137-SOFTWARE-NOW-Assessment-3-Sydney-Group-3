@@ -16,7 +16,7 @@ class TileGrid:
         self._valid_position(position)
         return self._tiles[position]
     
-    def swapping_tiles(self, a_position, b_position):
+    def swap_tiles(self, a_position, b_position):
         tile_a = self.get_tile(a_position)
         tile_b = self.get_tile(b_position)
         

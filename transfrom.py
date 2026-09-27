@@ -20,7 +20,7 @@ class SwapTransform(Transform):
     def apply(self, grid):
         grid.swap_tiles(self._a_position, self._b_position)
         
-    def decribe(self):
+    def describe(self):
         return f'Swap tiles at {self._a_position} and {self._b_position}'
 
 
@@ -36,7 +36,7 @@ class RotateTransform(Transform):
         tile = grid.get_tile(self._position)
         tile.rotate(self._degrees)
     
-    def decribe(self):
+    def describe(self):
         return f'The tile got rotated at {self._position} by {self._degrees} degrees'
 
 

@@ -49,14 +49,14 @@ class Tile:
         }
 
         self._image = cv2.rotate(self._image, rotation_map[degrees])
-        self._rotation = (self._rotation * degrees) % 360
+        self._rotation = (self._rotation + degrees) % 360
         
     def flip(self, direction='horizontal'):
-        if direction not in self.VALID_DIRECTION:
+        if direction not in self.direction:
             raise ValueError("Direction must be 'horizontal' or 'vertical'")
         
         if direction == 'horizontal':
-            self._image = cv2.flip(self._image, 1)
+            self._image = cv2.flip(self._image, 0)
             self._horizontal_rotation = not self._horizontal_rotation
         else:
             self._image = cv2.flip(self._image, 1)

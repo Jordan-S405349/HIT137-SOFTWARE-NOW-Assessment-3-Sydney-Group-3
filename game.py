@@ -28,7 +28,7 @@ class Game:
     
     def load_tiles(self, tile_image):
         for position, image_data in tile_image.items():
-            self._grid.place_title(position, Tile(image_data, home_position=position))
+            self._grid.place_tile(position, Tile(image_data, home_position=position))
             
         self._moves = 0
         self._used_hint = 0
@@ -58,15 +58,16 @@ class Game:
                     kind = 'rotate'
                 else:
                     a_position, b_position = random.sample(available, 2)
-                    used_in_swap(a_position)
-                    used_in_swap(b_position)
+                    used_in_swap.add(a_position)
+                    used_in_swap.add(b_position)
                     transformations.append(SwapTransform(a_position, b_position))
                     continue
                 
             if kind == 'rotate':
                 position = random.choice(all_positions)
-                degrees = random.choice(90, 180, 270)
-                transformations.append(SwapTransform(position, degrees))
+                degrees = random.choice([90, 180, 270])
+                transformations.append(RotateTransform(position, degrees))
+                continue
                 
             position = random.choice(all_positions)
             direction = random.choice(['horizontal', 'vertical'])
