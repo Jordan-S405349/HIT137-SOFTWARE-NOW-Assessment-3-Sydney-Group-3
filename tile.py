@@ -4,6 +4,17 @@ class Tile:
     rotations = (0, 90, 180, 270)
     direction = ('horizontal', 'vertical')
 
+    rotation_map = {
+        90: cv2.ROTATE_90_CLOCKWISE,
+        180: cv2.ROTATE_180,
+        270: cv2.ROTATE_90_COUNTERCLOCKWISE
+    }
+    
+    flip_code = {
+        'horizontal': 1,
+        'vertical': 0
+    }
+
     def __init__(self, image, home_position):
         self._image = image
         self._home_position = home_position
@@ -39,27 +50,21 @@ class Tile:
         self._current_position = new_position
     
     def rotate(self, degrees=90):
-        if degrees not in (90,180,270):
-            raise ValueError('Rotation must be 90, 180, or 270')
+        if degrees not in self.rotations or degrees == 0:
+            raise ValueError(f'Rotation must be 90, 180, or 270, got {degrees!r}')
         
-        rotation_map = {
-            90: cv2.ROTATE_90_CLOCKWISE,
-            180: cv2.ROTATE_180,
-            270: cv2.ROTATE_90_COUNTERCLOCKWISE
-        }
-
-        self._image = cv2.rotate(self._image, rotation_map[degrees])
+        self._image = cv2.rotate(self._image, self.rotation_map[degrees])
         self._rotation = (self._rotation + degrees) % 360
         
     def flip(self, direction='horizontal'):
         if direction not in self.direction:
             raise ValueError("Direction must be 'horizontal' or 'vertical'")
         
+        self._image = cv2.flip(self._image, self.flip_code[direction])
+        
         if direction == 'horizontal':
-            self._image = cv2.flip(self._image, 0)
             self._horizontal_rotation = not self._horizontal_rotation
         else:
-            self._image = cv2.flip(self._image, 1)
             self._vertical_rotation = not self._vertical_rotation
     
     def reset(self):
