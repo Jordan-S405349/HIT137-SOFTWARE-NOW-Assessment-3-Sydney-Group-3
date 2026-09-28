@@ -26,11 +26,9 @@ def make_tile_image_dict(grid_size, size=4):
         for row in range(grid_size)
         for col in range(grid_size)
     }
- 
- 
-# ---------------------------------------------------------------------------
+
 # TileGrid
-# ---------------------------------------------------------------------------
+
 class TestTileGrid(unittest.TestCase):
  
     def setUp(self):
@@ -112,9 +110,9 @@ class TestTileGrid(unittest.TestCase):
         self.assertIs(self.grid.get_tile((0, 1)), self.tile_b)
  
  
-# ---------------------------------------------------------------------------
+
 # Tile
-# ---------------------------------------------------------------------------
+
 class TestTile(unittest.TestCase):
  
     def setUp(self):
@@ -202,11 +200,9 @@ class TestTile(unittest.TestCase):
         self.assertFalse(self.tile.horizontal_rotation)
         self.assertFalse(self.tile.vertical_rotation)
         np.testing.assert_array_equal(self.tile.get_display_img(), original)
- 
- 
-# ---------------------------------------------------------------------------
-# Transform hierarchy (polymorphism)
-# ---------------------------------------------------------------------------
+
+# Transform hierarchy
+
 class TestTransforms(unittest.TestCase):
  
     def setUp(self):
@@ -270,11 +266,9 @@ class TestTransforms(unittest.TestCase):
  
         self.assertEqual(self.tile_b.rotation, 180)
         self.assertTrue(self.tile_a.vertical_rotation)
- 
- 
-# ---------------------------------------------------------------------------
+
 # Game (integration across all four files)
-# ---------------------------------------------------------------------------
+
 class TestGame(unittest.TestCase):
  
     def setUp(self):
