@@ -18,6 +18,7 @@ that belongs encapsulated with the data it affects.
 
 
 import cv2
+import numpy as np
 
 class Tile:
     rotations = (0, 90, 180, 270)
@@ -35,14 +36,23 @@ class Tile:
     }
 
     def __init__(self, image, home_position):
-        self._image = image
+        self._original_image = image.copy()
+        self._image = image.copy()
+
         self._home_position = home_position
-        
         self._current_position = home_position
 
         self._rotation = 0
         self._horizontal_rotation = False
         self._vertical_rotation = False
+
+    @property
+    def image(self):
+        return self._image
+    
+    @property
+    def original_image(self):
+        return self._original_image
 
     @property
     def home_position(self):
@@ -87,24 +97,18 @@ class Tile:
             self._vertical_rotation = not self._vertical_rotation
     
     def reset(self):
-        if self._horizontal_rotation:
-            self.flip('horizontal')
-            
-        if self.vertical_rotation:
-            self.flip('vertical')
-        
-        if self._rotation != 0:
-            self.rotate(360 - self._rotation)
-        
+        self._image = self._original_image.copy()
+
+        self._rotation = 0
+        self._horizontal_rotation = False
+        self._vertical_rotation = False
         self._current_position = self._home_position
         
     def correct(self):
         return (
             self._current_position == self._home_position
-            and self._rotation == 0
-            and not self._horizontal_rotation
-            and not self._vertical_rotation
+            and np.array_equal(self._image, self._original_image)
         )
-        
+   
     def get_display_img(self):
         return self._image

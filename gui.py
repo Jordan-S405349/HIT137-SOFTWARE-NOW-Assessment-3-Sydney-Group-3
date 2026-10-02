@@ -139,16 +139,50 @@ class PuzzleApp:
 
     def load_image(self):
         """Ask for an image file and start a new round with it."""
-        path = filedialog.askopenfilename(title='Choose an image', filetypes=self.FILE_TYPES)
+        path = filedialog.askopenfilename(
+            title='Choose an image',
+            filetypes=self.FILE_TYPES
+        )
+
         if not path:
-            return  # dialog cancelled: keep the current game as it is
+            return
+
         try:
             image = self._processor.load(path)
-        except ImageLoadError as error:
+            grid_size = self.GRID_CHOICES[self._grid_var.get()]
+            prepared = self._processor.prepare(
+                image, self._canvas_size, grid_size
+            )
+        except (ImageLoadError, ValueError, cv2.error) as error:
             messagebox.showerror('Cannot load image', str(error))
             return
+
+        # Stop any previous round's timer.
+        self._stop_timer()
+
         self._source_image = image
-        self.new_round()
+        self._prepared_image = prepared
+        self._game = None
+        self._hint = None
+
+        # Display a preview without scrambling.
+        self._show(
+            self._original_canvas,
+            self._prepared_image,
+            'original'
+        )
+        self._show(
+            self._puzzle_canvas,
+            self._prepared_image,
+            'puzzle'
+        )
+
+        self._message_var.set(
+            'Image loaded. Choose your settings and press New Round to play.'
+        )
+
+        self._reset_status()
+        self._update_buttons()
 
     def new_round(self):
         """Start a fresh round with the current image and settings."""
@@ -168,8 +202,12 @@ class PuzzleApp:
 
     def _settings_changed(self):
         """Grid size or difficulty changed: start again if a game is running."""
-        if self._source_image is not None:
-            self.new_round()
+        if self._source_image is None:
+            return
+
+        self._message_var.set(
+            'Settings changed. Press New Round to apply them.'
+        )
 
     # ----- mouse input -----------------------------------------------------
 
@@ -274,6 +312,19 @@ class PuzzleApp:
             return
         self._timer_job = self._root.after(1000, self._tick)
 
+    def _reset_status(self):
+        """Show neutral values before a round begins."""
+        defaults = {
+            'moves': '0',
+            'tiles': '-',
+            'hints': '-',
+            'score': '0',
+            'time': '-'
+        }
+
+        for key, value in defaults.items():
+            self._status_vars[key].set(value)
+
     # ----- drawing ---------------------------------------------------------
 
     def _refresh(self):
@@ -288,9 +339,15 @@ class PuzzleApp:
 
     def _update_buttons(self):
         """Hint is disabled once 3 hints are used; both are disabled when the round ends."""
-        playing = self._game is not None and not self._game.is_locked()
-        hint_ok = playing and self._game.hints_remaining() > 0
-        self._hint_button.configure(state='normal' if hint_ok else 'disabled')
+        playing = (
+            self._game is not None
+            and not self._game.is_locked()
+        )
+
+        hints_available = (playing and self._game.hints_remaining() > 0)
+
+        self._hint_button.configure(state='normal' if hints_available else 'disabled')
+        
         self._solve_button.configure(state='normal' if playing else 'disabled')
 
     def _show(self, canvas, bgr_image, key):
@@ -302,20 +359,28 @@ class PuzzleApp:
         canvas.create_image(centre, centre, image=photo, anchor='center')
 
     def _update_status(self):
+        """Update counters only when a game exists."""
         game = self._game
+
+        if game is None:
+            self._reset_status()
+            return
+
         seconds = game.time_left()
+
         self._status_vars['moves'].set(str(game.moves_made()))
         self._status_vars['tiles'].set(str(game.tiles_remaining()))
         self._status_vars['hints'].set(str(game.hints_remaining()))
         self._status_vars['score'].set(str(game.score()))
-        self._status_vars['time'].set(f'{seconds // 60}:{seconds % 60:02d}')
+        self._status_vars['time'].set(
+            f'{seconds // 60}:{seconds % 60:02d}'
+        )
 
     # ----- errors ----------------------------------------------------------
 
     def _show_unexpected_error(self, exc_type, exc_value, exc_traceback):
         """Show any unexpected error in a message box instead of crashing."""
         messagebox.showerror('Unexpected error', f'{exc_type.__name__}: {exc_value}')
-
 
 def main():
     root = tk.Tk()

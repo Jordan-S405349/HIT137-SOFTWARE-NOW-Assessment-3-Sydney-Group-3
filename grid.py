@@ -36,13 +36,28 @@ class TileGrid:
     
     def all_positions(self):
         return self.all_position()
+
+    def tile_is_correct(self, position):
+        tile = self.get_tile(position)
+
+        return (
+            position == tile.home_position
+            and tile.correct()
+        )
     
     def solved(self):
-        return all(tile.correct() for tile in self.all_tiles())
-    
+        return all(
+            self.tile_is_correct(position)
+            for position in self.all_positions()
+        )
+
     def incorrect_count(self):
-        return sum(1 for tile in self.all_tiles() if not tile.correct())
-    
+        return sum(
+            1
+            for position in self.all_positions()
+            if not self.tile_is_correct(position)
+        )
+        
     def reindex_in_home_position(self):
         self._tiles = {tile.home_position: tile for tile in self.all_tiles()}
     

@@ -71,12 +71,21 @@ class Game:
         
     def scramble(self):
         transform_count = self.count_transform[self._grid_size]
-        transformation = self._generate_random_transform(transform_count)
-        
-        for transformations in transformation:
-            transformations.apply(self._grid)
-        
-        return transformation
+
+        # Keep scrambling until the board is genuinely not solved.
+        while True:
+            transformations = self._generate_random_transform(transform_count)
+
+            for transformation in transformations:
+                transformation.apply(self._grid)
+
+            if not self._grid.solved():
+                break
+
+        # A new round starts with no player moves.
+        self._moves = 0
+        self._select_position = None
+        self._state = self.PLAYING
     
     def _generate_random_transform(self, count):
         
@@ -176,21 +185,21 @@ class Game:
     
     def is_solved(self):
         return self._grid.solved()
-    
+
     def moves_made(self):
         return self._moves
-    
+
     def tiles_remain(self):
         return self._grid.incorrect_count()
-    
+
     def tiles_remaining(self):
-        return self.tiles_remain
-    
+        return self.tiles_remain()
+
     def hint_remain(self):
         return self.hint_max - self._used_hint
-    
-    def hint_remaining(self):
-        return self.hint_remain
+
+    def hints_remaining(self):
+        return self.hint_remain()
     
     @property
     def grid(self):

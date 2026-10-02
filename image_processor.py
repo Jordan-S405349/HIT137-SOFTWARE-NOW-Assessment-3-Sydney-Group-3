@@ -116,7 +116,7 @@ class ImageProcessor:
 
         if show_ticks:
             for position in grid.all_positions():
-                if grid.get_tile(position).correct():
+                if grid.tile_is_correct(position):
                     self._draw_tick(image, position, tile_side)
 
         self._draw_grid_lines(image, grid.size)
