@@ -240,9 +240,9 @@ I tested the gameplay functionality to ensure that:
 ---
 # Summary of Jordan's Contribution
 
-**Name:** Jordan Then Ryan
+**Name:** Jordan Then Ryan   
 **Student ID:** S405349  
-**Main Responsibility:** OOP
+**Main Responsibility:** OOP Structure
 
 My main contribution was in the development of OOP structure for the puzzle for other members and fixing bugs that the other members make in their code.
 
