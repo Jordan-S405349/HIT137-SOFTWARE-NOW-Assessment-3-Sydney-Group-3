@@ -177,3 +177,15 @@ The main contribution was the development of `image_processor.py`, which provide
 **Main Responsibility:** Tkinter GUI and Gameplay Interface
 
 My main contribution was developing the `gui.py` interface for the puzzle game. It provides image selection, puzzle settings, mouse controls, gameplay status, hints, the timer and solution controls, and connects the player-facing interface with the game and image-processing components.
+
+## Task D — Gameplay Logic (Moves, Hints, Solve, Completion)
+**Good news: this is almost entirely built already** — mostly a UI-wiring job:
+ 
+- Moves counter → `game.moves_made()`
+- Tiles remaining → `game.tiles_remain()`
+- Hint → `game.get_hint()` returns `(current_position, home_position)` or `None`; draw the blue circle on both images at those two positions, and remove it on the next move (that clearing is a GUI-side responsibility — `Game` doesn't track "hint is currently displayed"). Hint cap is already enforced via `game.hint_remain()` hitting 0.
+- Solve → `game.solve()` (resets tiles, moves, hints, selection — already tested).
+- Completion → `game.is_solved()`; when true, lock out click handling until a new image loads.
+- The one thing to be careful with: **hint circle must appear on both the transformed AND original image every time** — that's an explicit D-level failure mode in the rubric.
+ 
+One coordination note worth flagging to the group: whoever does the GUI needs to know the tile size/dimensions from Task B's split, since click-to-tile-position math depends on it — worth a quick sync between B and C before either gets too far in.
