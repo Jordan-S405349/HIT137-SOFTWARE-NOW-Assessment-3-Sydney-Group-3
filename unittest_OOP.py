@@ -26,9 +26,9 @@ def make_tile_image_dict(grid_size, size=4):
         for row in range(grid_size)
         for col in range(grid_size)
     }
-
+ 
 # TileGrid
-
+ 
 class TestTileGrid(unittest.TestCase):
  
     def setUp(self):
@@ -110,9 +110,9 @@ class TestTileGrid(unittest.TestCase):
         self.assertIs(self.grid.get_tile((0, 1)), self.tile_b)
  
  
-
+ 
 # Tile
-
+ 
 class TestTile(unittest.TestCase):
  
     def setUp(self):
@@ -200,9 +200,9 @@ class TestTile(unittest.TestCase):
         self.assertFalse(self.tile.horizontal_rotation)
         self.assertFalse(self.tile.vertical_rotation)
         np.testing.assert_array_equal(self.tile.get_display_img(), original)
-
+ 
 # Transform hierarchy
-
+ 
 class TestTransforms(unittest.TestCase):
  
     def setUp(self):
@@ -243,14 +243,12 @@ class TestTransforms(unittest.TestCase):
         self.assertIn('vertical', t.describe())
  
     def test_flip_transform_bad_direction_raises(self):
-        # NOTE: FlipTransform.__init__ has a bug -- on an invalid direction it
-        # does `return ValueError(...)` instead of `raise ValueError(...)`.
-        # Returning a non-None value from __init__ is itself illegal in
-        # Python, so this currently surfaces as a TypeError (not the
-        # ValueError the code is clearly trying to raise). This test pins
-        # down that *current* behavior so a fix is a deliberate, visible
-        # change rather than a silent one.
-        with self.assertRaises(TypeError):
+        # FlipTransform.__init__ previously did `return ValueError(...)`
+        # instead of `raise ValueError(...)`, which surfaced as a TypeError
+        # rather than the ValueError the code was clearly trying to raise.
+        # That has now been fixed, so this checks for the intended
+        # ValueError directly.
+        with self.assertRaises(ValueError):
             FlipTransform((0, 0), 'diagonal')
  
     def test_transforms_are_polymorphic_over_a_common_apply_interface(self):
@@ -266,9 +264,9 @@ class TestTransforms(unittest.TestCase):
  
         self.assertEqual(self.tile_b.rotation, 180)
         self.assertTrue(self.tile_a.vertical_rotation)
-
+ 
 # Game (integration across all four files)
-
+ 
 class TestGame(unittest.TestCase):
  
     def setUp(self):
@@ -383,6 +381,7 @@ class TestGame(unittest.TestCase):
         self.game.solve()
         self.assertTrue(self.game.is_solved())
         self.assertEqual(self.game.tiles_remain(), 0)
+ 
  
  
 if __name__ == '__main__':

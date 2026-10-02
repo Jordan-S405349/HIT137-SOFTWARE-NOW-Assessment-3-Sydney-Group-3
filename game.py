@@ -15,6 +15,8 @@ This is the class the other two members' code plugs into:
 """
 
 import random
+import time
+
 from tile import Tile
 from grid import TileGrid
 from transfrom import (
@@ -24,14 +26,25 @@ from transfrom import (
     FlipTransform
 )
 
+DIFFICULTIES = {
+    'Easy': 300,
+    'Medium': 180,
+    'Hard': 90
+}
+
 class Game:
     
     hint_max = 3
     count_transform = {3: 6, 4: 12, 5:20}
     
-    def __init__(self, grid_size=3):
+    PLAYING = 'playing'
+    WON = 'won'
+    TIME_OUT = 'time_out'
+    def __init__(self, grid_size=3, difficulty='Medium'):
         if grid_size not in self.count_transform:
             raise ValueError('Grid_size mus be 3, 4 or 5')
+        if difficulty not in DIFFICULTIES:
+            raise ValueError(f'Difficulty must be one of {list(DIFFICULTIES)}, got {difficulty!r}')
         
         self._grid_size  = grid_size
         self._grid = TileGrid(grid_size)
@@ -39,6 +52,10 @@ class Game:
         self._used_hint = 0
         self._select_position = None
         
+        self._difficulty = difficulty
+        self._time_limit = DIFFICULTIES[difficulty]
+        self._start_time = None
+        self._state = self.PLAYING
     
     """ Caleed per loaded image once"""
     
@@ -49,7 +66,9 @@ class Game:
         self._moves = 0
         self._used_hint = 0
         self._select_position = None
-    
+        self._state = self.PLAYING
+        self._start_time = time.time()
+        
     def scramble(self):
         transform_count = self.count_transform[self._grid_size]
         transformation = self._generate_random_transform(transform_count)
@@ -116,9 +135,15 @@ class Game:
     def apply_transform(self, transform):
         transform.apply(self._grid)
         self._moves += 1
+        if self._grid.solved():
+            self._state = self.WON
 
     @property
     def select_position(self):
+        return self._select_position
+    
+    @property
+    def selected_position(self):
         return self._select_position
 
     """ Hints """
@@ -145,6 +170,7 @@ class Game:
         self._moves = 0
         self._used_hint = 0
         self._select_position = None
+        self._state = self.WON
         
     """ Status is called by GUI to update the on screen counters"""
     
@@ -157,8 +183,14 @@ class Game:
     def tiles_remain(self):
         return self._grid.incorrect_count()
     
+    def tiles_remaining(self):
+        return self.tiles_remain
+    
     def hint_remain(self):
         return self.hint_max - self._used_hint
+    
+    def hint_remaining(self):
+        return self.hint_remain
     
     @property
     def grid(self):
@@ -167,3 +199,27 @@ class Game:
     @property
     def grid_size(self):
         return self._grid_size
+    
+    @property
+    def state(self):
+        return self._state
+    
+    def is_locked(self):
+        return self._state != self.PLAYING
+    
+    def time_left(self):
+        if self._start_time is None:
+            return self._time_limit
+        elapsed = time.time() - self._start_time
+        return max(0, int(self._time_limit - elapsed))
+    
+    def check_time(self):
+        if self._state == self.PLAYING and self.time_left() <= 0:
+            self._state = self.TIME_OUT
+        return self._state == self.TIME_OUT
+    
+    def score(self):
+        base = 1000
+        penalty = (self._moves*5) + (self._used_hint*50)
+        time_bonus = self.time_left()*2
+        return max(0, base - penalty + time_bonus)

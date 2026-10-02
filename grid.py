@@ -34,6 +34,9 @@ class TileGrid:
             for col in range (self._size)
         ]
     
+    def all_positions(self):
+        return self.all_position()
+    
     def solved(self):
         return all(tile.correct() for tile in self.all_tiles())
     

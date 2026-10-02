@@ -64,7 +64,7 @@ class FlipTransform(Transform):
     
     def __init__(self, position, direction='horizontal'):
         if direction not in ('horizontal', 'vertical'):
-            return ValueError('The direction must be horizontal or vertical')
+            raise ValueError('The direction must be horizontal or vertical')
         self._position = position
         self._direction = direction
         
