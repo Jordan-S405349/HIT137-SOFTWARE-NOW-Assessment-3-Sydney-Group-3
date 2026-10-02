@@ -42,6 +42,20 @@ The Tkinter component provides the graphical user interface and handles player i
 
 # Individual Contributions
 
+## Jordan Then Ryan - S405349
+
+Built the core OOP structure for the puzzle: the Tile class, the TileGrid class, the Transform class hierarchy, and the Game class that ties everything together.
+
+Files contributed:
+
+tile.py: contains the Tile class. Handles a single tile's picture, its home position, its current position, and its rotation and flip state. Includes rotate, flip, reset, and correct methods.
+
+grid.py: contains the TileGrid class. Manages the layout of tiles in the grid, including looking up a tile by position, swapping two tiles, and checking whether the whole grid is solved.
+
+transfrom.py: contains the Transform base class and its three subclasses, SwapTransform, RotateTransform, and FlipTransform. Each one applies a different kind of scramble to the grid through the same shared apply method.
+
+game.py: contains the Game class. Loads tiles into the grid, generates the random scramble when an image is loaded, and handles player actions such as selecting a tile, rotating, flipping, using a hint, and solving the puzzle.
+
 ## Shraboni Sutradhar - S401805
 
 **Primary Contribution: Image Processing and OpenCV (`image_processor.py`)**
@@ -224,6 +238,13 @@ I tested the gameplay functionality to ensure that:
 - A new image allows the player to start again.
 
 ---
+# Summary of Jordan's Contribution
+
+**Name:** Jordan Then Ryan
+**Student ID:** S405349  
+**Main Responsibility:** OOP
+
+My main contribution was in the development of OOP structure for the puzzle for other members and fixing bugs that the other members make in their code.
 
 # Summary of Shraboni's Contribution
 
