@@ -161,6 +161,69 @@ The project is divided into separate components so that different responsibiliti
 - **`gui.py`** — displays the game and handles player input and interface updates.
 
 ---
+## Areeba Salahuddin - [S404018]
+
+**Primary Contribution: Gameplay Logic and GUI Integration**
+
+I developed the gameplay logic and connected the existing `Game` class functionality with the graphical user interface. My contribution focuses on updating the game information, handling hints and solving, and controlling the game when the puzzle is completed.
+
+### Moves Counter
+
+I connected the moves counter in the GUI to the `game.moves_made()` method.
+
+The displayed number of moves is updated after the player makes a move so that the GUI always shows the current number of moves.
+
+### Tiles Remaining
+
+I connected the tiles remaining display to the `game.tiles_remain()` method.
+
+This allows the GUI to show how many tiles still need to be placed in their correct positions.
+
+### Hint Functionality
+
+I implemented the Hint button using the `game.get_hint()` method.
+
+The method returns the current tile position and its correct home position. A blue hint circle is displayed on both:
+
+- The transformed puzzle image
+- The original image
+
+The hint circles are removed when the player makes the next move. The existing `game.hint_remain()` functionality is used to enforce the hint limit.
+
+### Solve Functionality
+
+I connected the Solve button to the `game.solve()` method.
+
+The solve functionality resets the puzzle state, including the tiles, moves, hints and selection, allowing the game to return to its initial state.
+
+### Completion Detection
+
+I implemented completion checking using the `game.is_solved()` method.
+
+When the puzzle is completed, further tile clicks are disabled so that the player cannot make additional moves after the game has been solved.
+
+When a new image is loaded, the completed state is reset so that the player can start a new puzzle.
+
+### GUI and Game Integration
+
+The gameplay functionality is handled through the GUI while the existing `Game` class manages the underlying game state.
+
+This keeps the game logic and user-interface responsibilities separated while allowing the GUI to display the current game state and respond to player actions.
+
+### Testing
+
+I tested the gameplay functionality to ensure that:
+
+- The moves counter updates correctly.
+- The number of remaining tiles is displayed correctly.
+- Hints appear on both images.
+- Hint circles disappear after the next move.
+- The hint limit is respected.
+- The Solve button resets the game.
+- Completed puzzles prevent further tile movements.
+- A new image allows the player to start again.
+
+---
 
 # Summary of Shraboni's Contribution
 
@@ -178,14 +241,11 @@ The main contribution was the development of `image_processor.py`, which provide
 
 My main contribution was developing the `gui.py` interface for the puzzle game. It provides image selection, puzzle settings, mouse controls, gameplay status, hints, the timer and solution controls, and connects the player-facing interface with the game and image-processing components.
 
-## Task D — Gameplay Logic (Moves, Hints, Solve, Completion)
-**Good news: this is almost entirely built already** — mostly a UI-wiring job:
- 
-- Moves counter → `game.moves_made()`
-- Tiles remaining → `game.tiles_remain()`
-- Hint → `game.get_hint()` returns `(current_position, home_position)` or `None`; draw the blue circle on both images at those two positions, and remove it on the next move (that clearing is a GUI-side responsibility — `Game` doesn't track "hint is currently displayed"). Hint cap is already enforced via `game.hint_remain()` hitting 0.
-- Solve → `game.solve()` (resets tiles, moves, hints, selection — already tested).
-- Completion → `game.is_solved()`; when true, lock out click handling until a new image loads.
-- The one thing to be careful with: **hint circle must appear on both the transformed AND original image every time** — that's an explicit D-level failure mode in the rubric.
- 
-One coordination note worth flagging to the group: whoever does the GUI needs to know the tile size/dimensions from Task B's split, since click-to-tile-position math depends on it — worth a quick sync between B and C before either gets too far in.
+# Summary of Areeba's Contribution
+
+**Name:** Areeba Salahuddin  
+**Student ID:** S404018  
+**Main Responsibility:** Gameplay Logic and GUI Integration
+
+The main contribution was connecting the existing `Game` functionality with the GUI. This included displaying moves and remaining tiles, implementing hints on both images, connecting the Solve button, and preventing further moves when the puzzle is completed.
+
